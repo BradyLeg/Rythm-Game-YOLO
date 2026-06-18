@@ -18,4 +18,19 @@ Primary structure:
 - `app/packaging` for `.exe` build and release work
 - `app/tests` for automated tests
 
+---
+
+## Getting Started
+
+```powershell
+# Clone the repo, then from the project root:
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+> FFmpeg must be installed system-wide and added to PATH (required by Whisper).
+
+---
+
 Each directory contains its own README placeholder with guidance for that area.
