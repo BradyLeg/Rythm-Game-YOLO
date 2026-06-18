@@ -3,3 +3,9 @@ venv/
 __pycache__/
 *.pyc
 *.wav
+*.pt
+sound-temp/
+inspect_api.py
+test_tts.py
+test_llm.py
+

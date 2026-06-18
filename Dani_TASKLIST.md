@@ -46,32 +46,33 @@ You'll see `(venv)` in your prompt when active. To deactivate: `deactivate`
 
 ## Tasks
 
-### 1. Set Up GUI Shell
+### 1. Set Up GUI Shell ✅
 
-- [ ] Choose GUI framework (PyQt5 recommended for desktop `.exe`)
-- [ ] Create main window with title bar and basic layout
-- [ ] Add a status label showing current system state (Idle, Listening, Processing)
-- [ ] Add a "Start Listening" / "Stop Listening" toggle button
-- [ ] Add a text area showing transcription output and LLM responses
+- [x] Choose GUI framework (PyQt6 for desktop `.exe`)
+- [x] Create main window with title bar and basic layout
+- [x] Add a status label showing current system state (Idle, Listening, Processing)
+- [x] Add a "Start Listening" / "Stop Listening" toggle button
+- [x] Add a text area showing transcription output and LLM responses
 
-### 2. Implement Microphone Capture
+### 2. Implement Microphone Capture ✅
 
-- [ ] Use `sounddevice` to record audio from default microphone
-- [ ] Record in chunks (e.g., 3–5 seconds of silence-delimited speech)
-- [ ] Save audio buffer to a temporary `.wav` file for Whisper processing
+- [x] Use `sounddevice` to record audio from default microphone
+- [x] Record in chunks (4 seconds of 16kHz mono int16 audio)
+- [x] Save audio buffer to a temporary `.wav` file for Whisper processing
+- [x] Wire mic capture to GUI button with QThread (non-blocking)
 
-### 3. Integrate Whisper Small (STT)
+### 3. Integrate Whisper Small (STT) ✅
 
-- [ ] Load Whisper Small model locally in `app/integrations/whisper/`
-- [ ] Create a function `transcribe(audio_path: str) -> str` that returns text
-- [ ] Wire microphone capture → transcription → display in GUI text area
-- [ ] Handle edge cases: empty audio, background noise, short utterances
+- [x] Load Whisper Small model locally in `app/integrations/whisper/`
+- [x] Create a function `transcribe(audio_path: str) -> str` that returns text
+- [x] Wire microphone capture → transcription → display in GUI text area
+- [x] Handle edge cases: empty audio, background noise, short utterances
 
-### 4. Connect Frontend to Backend API
+### 4. Connect Frontend to Backend API ✅
 
-- [ ] Send transcribed text to `POST /api/process` on the FastAPI backend
-- [ ] Display LLM response in GUI text area
-- [ ] Show loading/processing indicator while waiting for backend response
+- [x] Send transcribed text to `POST /api/process` on the FastAPI backend
+- [x] Display LLM response in GUI text area
+- [x] Show loading/processing indicator while waiting for backend response
 
 ### 5. GUI Polish & UX
 
