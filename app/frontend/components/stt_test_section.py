@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout,
     QLabel, QPushButton, QTextEdit, QComboBox,
 )
-from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtCore import pyqtSignal, QThread
 
 
 PHRASES = [
@@ -15,11 +15,30 @@ PHRASES = [
 ]
 
 
+class RecordWorker(QThread):
+    """Records audio on a background thread."""
+    finished = pyqtSignal(str)  # emits wav file path
+    error = pyqtSignal(str)
+
+    def __init__(self, duration: float = 4.0):
+        super().__init__()
+        self.duration = duration
+
+    def run(self):
+        try:
+            from app.backend.services.stt.mic_capture import record_audio
+            path = record_audio(self.duration)
+            self.finished.emit(path)
+        except Exception as e:
+            self.error.emit(str(e))
+
+
 class STTTestSection(QWidget):
     test_requested = pyqtSignal(str)
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self._worker = None
         self._build_ui()
 
     def _build_ui(self):
@@ -48,8 +67,23 @@ class STTTestSection(QWidget):
         layout.addWidget(self.stt_output)
 
     def _on_test_clicked(self):
-        phrase = self.phrase_combo.currentText()
-        self.test_requested.emit(phrase)
+        if self._worker and self._worker.isRunning():
+            return  # already recording
+        self.stt_btn.setEnabled(False)
+        self.stt_output.setText("🎙️ Recording (4s)...")
+        self._worker = RecordWorker(duration=4.0)
+        self._worker.finished.connect(self._on_record_done)
+        self._worker.error.connect(self._on_record_error)
+        self._worker.start()
+
+    def _on_record_done(self, wav_path: str):
+        self.stt_btn.setEnabled(True)
+        self.stt_output.setText(f"✅ Recorded: {wav_path}\nReady for transcription.")
+        self.test_requested.emit(self.phrase_combo.currentText())
+
+    def _on_record_error(self, msg: str):
+        self.stt_btn.setEnabled(True)
+        self.stt_output.setText(f"❌ Mic error: {msg}")
 
     def set_result(self, text: str):
         self.stt_output.setText(text)
