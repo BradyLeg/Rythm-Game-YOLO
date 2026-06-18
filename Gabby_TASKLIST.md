@@ -55,8 +55,8 @@ pip freeze > requirements.txt
 
 ### 1. Collect and Annotate Training Data
 
-- [ ] Record gameplay footage from the target rhythm game (screen capture or video files)
-- [ ] Extract frames at a consistent rate (e.g., every 50ms for fast note detection)
+- [x] Record gameplay footage from the target rhythm game (screen capture or video files)
+- [x] Extract frames at a consistent rate (e.g., every 50ms for fast note detection)
 - [ ] Annotate note objects using bounding boxes (LabelImg or Roboflow)
 - [ ] Define classes: `note_up`, `note_down`, `note_left`, `note_right` (adjust per game)
 - [ ] Split dataset: 80% train / 10% val / 10% test
