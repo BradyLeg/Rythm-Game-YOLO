@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout
 from app.frontend.gui.pallette import *
-from app.frontend.components import TitleBar, STTTestSection, YOLOSection, TTSSection
+from app.frontend.components import TitleBar, STTTestSection, YOLOSection, TTSSection, ControllerTestSection
 
 
 class MainWindow(QMainWindow):
@@ -29,6 +29,9 @@ class MainWindow(QMainWindow):
 
         self.tts_section = TTSSection()
         layout.addWidget(self.tts_section)
+
+        self.controller_test = ControllerTestSection()
+        layout.addWidget(self.controller_test)
 
         layout.addStretch()
 
