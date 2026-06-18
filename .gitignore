@@ -2,4 +2,11 @@
 venv/
 __pycache__/
 *.pyc
+<<<<<<< HEAD
 screenshots/
+=======
+*.wav
+*.pt
+sound-temp/
+
+>>>>>>> f681c89578066077fc0f4bf6c90f2ddf4e9af701
