@@ -57,17 +57,17 @@ pip freeze > requirements.txt
 
 - [x] Record gameplay footage from the target rhythm game (screen capture or video files)
 - [x] Extract frames at a consistent rate (e.g., every 50ms for fast note detection)
-- [ ] Annotate note objects using bounding boxes (LabelImg or Roboflow)
-- [ ] Define classes: `note_up`, `note_down`, `note_left`, `note_right` (adjust per game)
-- [ ] Split dataset: 80% train / 10% val / 10% test
+- [x] Annotate note objects using bounding boxes (LabelImg or Roboflow)
+- [x] Define classes: `note_up`, `note_down`, `note_left`, `note_right` (adjust per game)
+- [x] Split dataset: 80% train / 10% val / 10% test
 - [ ] Store dataset config in `app/models/vision/dataset.yaml`
 
 ### 2. Train YOLO Model
 
-- [ ] Use YOLOv8n or YOLOv8s (nano/small — fast enough for real-time)
-- [ ] Train with: `yolo detect train data=app/models/vision/dataset.yaml model=yolov8n.pt epochs=50`
-- [ ] Evaluate mAP on test set — target ≥ 0.80 mAP@0.5
-- [ ] Save best weights to `app/models/vision/best.pt`
+- [x] Use YOLOv8n or YOLOv8s (nano/small — fast enough for real-time)
+- [x] Train with: `yolo detect train data=app/models/vision/dataset.yaml model=yolov8n.pt epochs=50`
+- [x] Evaluate mAP on test set — target ≥ 0.80 mAP@0.5
+- [x] Save best weights to `app/models/vision/best.pt`
 - [ ] Document training metrics in `app/models/vision/training_notes.md`
 
 ### 3. Implement Real-Time Screen Capture
