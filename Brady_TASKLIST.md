@@ -57,40 +57,40 @@ pip freeze > requirements.txt
 
 ## Tasks
 
-### 1. Set Up FastAPI Backend
+### 1. Set Up FastAPI Backend ✅
 
-- [ ] Create `app/backend/api/routes.py` with a `POST /api/process` endpoint
-- [ ] Accept JSON body: `{ "text": "user transcription here" }`
-- [ ] Return JSON: `{ "response": "...", "action": "...", "tts_audio_url": "..." }`
-- [ ] Add health check route `GET /api/health`
-- [ ] Run locally with `uvicorn app.backend.api.routes:app --reload`
+- [x] Create `app/backend/api/routes.py` with a `POST /api/process` endpoint
+- [x] Accept JSON body: `{ "text": "user transcription here" }`
+- [x] Return JSON: `{ "response": "...", "action": "...", "tts_audio_url": "..." }`
+- [x] Add health check route `GET /api/health`
+- [x] Run locally with `uvicorn app.backend.api.routes:app --reload`
 
-### 2. Integrate gpt-oss-20b (LLM)
+### 2. Integrate gpt-oss-20b (LLM) ✅
 
-- [ ] Load gpt-oss-20b model in `app/integrations/gpt-oss-20b/llm.py`
-- [ ] Create function `generate_response(prompt: str) -> dict` returning text + action
-- [ ] Design system prompt that interprets rhythm-game voice commands
-- [ ] Implement tool-calling schema (e.g., `move_up`, `select`, `go_back`, `start_game`)
-- [ ] Add timeout and error handling for inference
+- [x] Load gpt-oss-20b model in `app/integrations/gpt-oss-20b/llm.py`
+- [x] Create function `generate_response(prompt: str) -> dict` returning text + action
+- [x] Design system prompt that interprets rhythm-game voice commands
+- [x] Implement tool-calling schema (e.g., `move_up`, `select`, `go_back`, `start_game`)
+- [x] Add timeout and error handling for inference
 
-### 3. Implement Tool-Calling / Action Router
+### 3. Implement Tool-Calling / Action Router ✅
 
-- [ ] Define available tools/actions in `app/backend/services/actions.py`
-- [ ] Map LLM output to concrete game actions (keyboard presses, navigation)
-- [ ] Log each action for debugging
+- [x] Define available tools/actions in `app/backend/services/actions.py`
+- [x] Map LLM output to concrete game actions (keyboard presses, navigation)
+- [x] Log each action for debugging
 
-### 4. Integrate MIKU TTS
+### 4. Integrate MIKU TTS ✅
 
-- [ ] Create TTS client in `app/integrations/miku-tts/tts.py`
-- [ ] Function `speak(text: str) -> str` that sends text to MIKU TTS and returns audio path/URL
-- [ ] Play audio response back to user or provide path to frontend
-- [ ] Handle TTS service unavailability gracefully
+- [x] Create TTS client in `app/integrations/miku-tts/tts.py`
+- [x] Function `speak(text: str) -> str` that sends text to MIKU TTS and returns audio path/URL
+- [x] Play audio response back to user or provide path to frontend
+- [x] Handle TTS service unavailability gracefully
 
-### 5. Build Orchestrator Pipeline
+### 5. Build Orchestrator Pipeline ✅
 
-- [ ] In `app/backend/orchestrator/pipeline.py`, wire: text input → LLM → action + TTS
-- [ ] Ensure pipeline returns both the action taken and spoken feedback
-- [ ] Add logging at each pipeline stage for debugging
+- [x] In `app/backend/orchestrator/pipeline.py`, wire: text input → LLM → action + TTS
+- [x] Ensure pipeline returns both the action taken and spoken feedback
+- [x] Add logging at each pipeline stage for debugging
 
 ---
 

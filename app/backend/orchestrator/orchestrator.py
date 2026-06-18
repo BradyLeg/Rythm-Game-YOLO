@@ -1,5 +1,6 @@
 import os
 import logging
+import threading
 from app.backend.services.stt.mic_capture import record_audio
 from app.integrations.whisper.stt import transcribe
 from app.backend.services.llm.command_router import CommandRouter
@@ -25,19 +26,25 @@ class GameOrchestrator:
         action = routing_result.get("action", "none")
         spoken_response = routing_result.get("response", "")
 
-        # 2. Synthesize Miku voice track response
+        # 2. Synthesize Miku voice track response (fire-and-forget to avoid blocking)
         audio_file_path = ""
         if spoken_response:
-            try:
-                audio_file_path = self.tts_client.speak(spoken_response)
-            except Exception as e:
-                logger.error(f"❌ [Orchestrator] Miku TTS generation failed: {e}")
+            threading.Thread(
+                target=self._generate_tts, args=(spoken_response,), daemon=True
+            ).start()
 
         return {
             "action": action,
             "response": spoken_response,
-            "audio_path": audio_file_path
+            "audio_path": ""
         }
+
+    def _generate_tts(self, text: str):
+        """Background TTS generation — plays audio when ready."""
+        try:
+            self.tts_client.speak(text)
+        except Exception as e:
+            logger.error(f"❌ [Orchestrator] Miku TTS generation failed: {e}")
 
     def run_live_voice_pipeline(self, record_duration: float = 4.0) -> dict:
         """
