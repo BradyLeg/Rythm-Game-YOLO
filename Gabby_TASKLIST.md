@@ -1,172 +1,146 @@
-# Gabby — YOLO Integration + Computer Vision Training
+# Gabby — YOLO Vision (Teaching a Computer to See the Game)
 
-## Working Folders
+## What You're Building
 
-- `app/integrations/yolo/` — YOLO model loading, inference, and key-press logic
-- `app/models/vision/` — Trained model weights, dataset configs, and training scripts
-- `app/tests/` — Tests for detection accuracy and input triggering
+You're training a computer to **look at a rhythm game** and **recognize the notes** on screen. Think of it like teaching a dog tricks — you show it lots of examples until it learns what to look for. Once it can "see" the notes, the rest of the team's code will press the right keys automatically.
 
----
+You'll use **Google Teachable Machine** to do the training — no coding required for that part!
 
-## Required Software
-
-| Tool | Purpose | Install |
-|------|---------|---------|
-| Python 3.10+ | Runtime | https://www.python.org/downloads/ |
-| pip | Package manager | Included with Python |
-| ultralytics | YOLOv8 training and inference | `pip install ultralytics` |
-| torch | PyTorch (GPU-accelerated inference) | `pip install torch torchvision` (see https://pytorch.org) |
-| opencv-python | Image/frame capture and processing | `pip install opencv-python` |
-| mss or dxcam | Fast screen capture on Windows | `pip install mss` or `pip install dxcam` |
-| pydirectinput | Simulate key presses for the game | `pip install pydirectinput` |
-| LabelImg or Roboflow | Annotate training data | `pip install labelImg` or use https://roboflow.com |
-| pytest | Testing | `pip install pytest` |
+🔗 **Teachable Machine:** https://teachablemachine.withgoogle.com/
 
 ---
 
-## Environment Setup
+## Your Working Folders
 
-All dependencies run inside a Python virtual environment. Do **not** install globally.
-
-```powershell
-# From the project root (Rythm-Game-YOLO/)
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-
-# Install all project dependencies
-pip install -r requirements.txt
-
-# Install additional packages for your tasks
-pip install ultralytics opencv-python mss pydirectinput labelImg
-```
-
-You'll see `(venv)` in your prompt when active. To deactivate: `deactivate`
-
-After installing new packages, update the shared requirements file:
-
-```powershell
-pip freeze > requirements.txt
-```
+| Folder | What goes here |
+|--------|---------------|
+| `app/models/vision/` | Your trained model files + screenshots |
+| `app/integrations/yolo/` | Code that uses your model (Dani/Brady will help here) |
 
 ---
 
-## Tasks
+## Tools You'll Need
 
-### 1. Collect and Annotate Training Data
-
-- [ ] Record gameplay footage from the target rhythm game (screen capture or video files)
-- [ ] Extract frames at a consistent rate (e.g., every 50ms for fast note detection)
-- [ ] Annotate note objects using bounding boxes (LabelImg or Roboflow)
-- [ ] Define classes: `note_up`, `note_down`, `note_left`, `note_right` (adjust per game)
-- [ ] Split dataset: 80% train / 10% val / 10% test
-- [ ] Store dataset config in `app/models/vision/dataset.yaml`
-
-### 2. Train YOLO Model
-
-- [ ] Use YOLOv8n or YOLOv8s (nano/small — fast enough for real-time)
-- [ ] Train with: `yolo detect train data=app/models/vision/dataset.yaml model=yolov8n.pt epochs=50`
-- [ ] Evaluate mAP on test set — target ≥ 0.80 mAP@0.5
-- [ ] Save best weights to `app/models/vision/best.pt`
-- [ ] Document training metrics in `app/models/vision/training_notes.md`
-
-### 3. Implement Real-Time Screen Capture
-
-- [ ] In `app/integrations/yolo/capture.py`, capture game window frames using `mss` or `dxcam`
-- [ ] Crop to the relevant gameplay area (exclude HUD/menus)
-- [ ] Target ≥30 FPS capture rate for rhythm game timing
-
-### 4. Implement YOLO Inference Pipeline
-
-- [ ] In `app/integrations/yolo/detector.py`, load trained model from `best.pt`
-- [ ] Create function `detect_notes(frame) -> list[Detection]` returning class, bbox, confidence
-- [ ] Filter detections by confidence threshold (e.g., ≥ 0.6)
-- [ ] Process detections in order of Y-position (closest to hit zone first)
-
-### 5. Map Detections to Key Presses
-
-- [ ] In `app/integrations/yolo/input.py`, map each note class to a keyboard key
-- [ ] Use `pydirectinput` to send key presses to the game window
-- [ ] Implement timing logic — press when note bbox crosses the hit zone Y-coordinate
-- [ ] Add configurable delay offset for timing calibration
-
-### 6. Main Game Loop
-
-- [ ] In `app/integrations/yolo/game_loop.py`, combine: capture → detect → press
-- [ ] Run loop continuously during gameplay
-- [ ] Add start/stop control (can be triggered by voice command via Brady's orchestrator)
-- [ ] Log detections and presses for performance tuning
+| Tool | What it does | How to get it |
+|------|-------------|---------------|
+| Google Teachable Machine | Train your model (in a web browser, no install) | https://teachablemachine.withgoogle.com/ |
+| Snipping Tool / ShareX | Take screenshots of the game | Built into Windows (`Win + Shift + S`) |
+| A web browser (Chrome recommended) | Run Teachable Machine | Already installed |
 
 ---
 
-## Suggested Tests
+## Tasks (Do These In Order)
 
-Write tests in `app/tests/test_yolo.py` and `app/tests/test_input.py`:
+### Task 1: Collect Screenshots from the Game
 
-```python
-# test_yolo.py
-import cv2
+**Goal:** Get lots of pictures of the game showing different notes.
 
-def test_model_loads():
-    """YOLO model loads without errors."""
-    from app.integrations.yolo.detector import load_model
-    model = load_model("app/models/vision/best.pt")
-    assert model is not None
+1. Open the rhythm game and start playing (or watch a YouTube video of gameplay)
+2. Use the **Snipping Tool** (`Win + Shift + S`) to screenshot moments when:
+   - An **up arrow / note** is on screen
+   - A **down arrow / note** is on screen
+   - A **left arrow / note** is on screen
+   - A **right arrow / note** is on screen
+   - **Nothing important** is on screen (just background)
+3. Save your screenshots into separate folders like this:
+   ```
+   app/models/vision/screenshots/
+   ├── note_up/        ← put all "up note" screenshots here
+   ├── note_down/      ← put all "down note" screenshots here
+   ├── note_left/      ← put all "left note" screenshots here
+   ├── note_right/     ← put all "right note" screenshots here
+   └── nothing/        ← put "no notes / just background" here
+   ```
+4. **Aim for at least 30 screenshots per folder** (more = better accuracy)
 
-def test_detect_notes_on_sample_frame():
-    """Detector returns detections on a known gameplay frame."""
-    from app.integrations.yolo.detector import load_model, detect_notes
-    model = load_model("app/models/vision/best.pt")
-    frame = cv2.imread("app/tests/fixtures/gameplay_frame.png")
-    detections = detect_notes(model, frame)
-    assert isinstance(detections, list)
-    assert len(detections) > 0
-
-def test_detection_has_required_fields():
-    """Each detection contains class, confidence, and bbox."""
-    from app.integrations.yolo.detector import load_model, detect_notes
-    model = load_model("app/models/vision/best.pt")
-    frame = cv2.imread("app/tests/fixtures/gameplay_frame.png")
-    detections = detect_notes(model, frame)
-    for det in detections:
-        assert "class" in det
-        assert "confidence" in det
-        assert "bbox" in det
-        assert det["confidence"] >= 0.6
-
-def test_no_detections_on_blank_frame():
-    """Detector returns empty list on a blank image."""
-    import numpy as np
-    from app.integrations.yolo.detector import load_model, detect_notes
-    model = load_model("app/models/vision/best.pt")
-    blank = np.zeros((480, 640, 3), dtype=np.uint8)
-    detections = detect_notes(model, blank)
-    assert detections == []
-```
-
-```python
-# test_input.py
-def test_key_mapping_exists():
-    """All note classes map to a valid key."""
-    from app.integrations.yolo.input import KEY_MAP
-    expected_classes = ["note_up", "note_down", "note_left", "note_right"]
-    for cls in expected_classes:
-        assert cls in KEY_MAP
-        assert isinstance(KEY_MAP[cls], str)
-
-def test_hit_zone_logic():
-    """Note within hit zone triggers press, note above does not."""
-    from app.integrations.yolo.input import should_press
-    # bbox format: (x, y, w, h) — y is top of bbox
-    assert should_press(bbox=(100, 450, 30, 30), hit_zone_y=460) is True
-    assert should_press(bbox=(100, 200, 30, 30), hit_zone_y=460) is False
-```
+> 💡 **Tip:** The more examples you give the model, the smarter it gets. Try to get screenshots with notes in different positions on screen.
 
 ---
 
-## Notes
+### Task 2: Train Your Model on Teachable Machine
 
-- Start with `mss` for screen capture; switch to `dxcam` if FPS is too low.
-- YOLOv8n is fastest; upgrade to YOLOv8s only if accuracy is insufficient.
-- Timing calibration is critical — add a configurable ms offset in a config file.
-- Coordinate with Brady to expose a `start_autoplay` / `stop_autoplay` action the LLM can trigger.
-- Test with recorded video files before live gameplay to iterate faster.
+**Goal:** Teach the computer to tell the difference between each note type.
+
+1. Go to https://teachablemachine.withgoogle.com/
+2. Click **"Get Started"** → choose **"Image Project"** → **"Standard image model"**
+3. You'll see classes on the left. Rename them and add more until you have:
+   - `note_up`
+   - `note_down`
+   - `note_left`
+   - `note_right`
+   - `nothing`
+4. For each class, click **"Upload"** and drag in all the screenshots from that folder
+5. Click **"Train Model"** — wait for it to finish (may take a couple minutes)
+6. **Test it!** Use the preview panel to show it new screenshots and see if it guesses right
+
+> 🎯 **Goal:** The model should get the right answer at least 8 out of 10 times. If it's making mistakes, add more screenshots of the ones it's confused about and retrain.
+
+---
+
+### Task 3: Export and Save Your Model
+
+**Goal:** Download the trained model so the app can use it.
+
+1. After training, click **"Export Model"**
+2. Choose the **"Tensorflow.js"** tab
+3. Click **"Download"** — you'll get a `.zip` file
+4. Unzip it and put the files in: `app/models/vision/teachable_model/`
+   - You should have files like `model.json`, `metadata.json`, and some `.bin` files
+5. Also try the **"Tensorflow Lite"** export — save that too as `app/models/vision/model.tflite`
+
+> 📝 Write a short note in `app/models/vision/training_notes.md` about:
+> - How many screenshots you used per class
+> - How accurate it seemed during testing
+> - Any classes it mixed up
+
+---
+
+### Task 4: Test Your Model with New Screenshots
+
+**Goal:** Make sure the model works on images it hasn't seen before.
+
+1. Take **5 brand new screenshots** of each note type (ones you DIDN'T use for training)
+2. Save them in `app/models/vision/test_screenshots/`
+3. Go back to Teachable Machine and use the preview to test each one
+4. Write down how many it got right vs wrong in `training_notes.md`
+
+**What "good enough" looks like:**
+- ✅ Gets it right 8+ out of 10 times = Great, move on!
+- ⚠️ Gets it right 5-7 out of 10 = Add more training screenshots and retrain
+- ❌ Gets it right less than 5 = Ask Dani for help troubleshooting
+
+---
+
+### Task 5: Help Connect It to the App (Team Task)
+
+**Goal:** Work with the team to plug your model into the game automation.
+
+Once your model is exported and accurate, the team will help write Python code that:
+1. Captures the game screen automatically
+2. Feeds each frame into your model
+3. Reads what note type it detected
+4. Presses the matching keyboard key
+
+**Your part:** Be available to retrain the model if it's not working well on live gameplay. You might need to add more screenshots of tricky scenarios.
+
+---
+
+## Quick Reference
+
+| Question | Answer |
+|----------|--------|
+| Where do I train the model? | https://teachablemachine.withgoogle.com/ |
+| How do I take screenshots? | `Win + Shift + S` (Snipping Tool) |
+| How many screenshots do I need? | At least 30 per class (more is better) |
+| Where do I save screenshots? | `app/models/vision/screenshots/<class_name>/` |
+| Where does the exported model go? | `app/models/vision/teachable_model/` |
+| What if the model isn't accurate? | Add more screenshots and retrain |
+| Who do I ask for help? | Dani or Brady |
+
+---
+
+## Notes for the Team
+
+- Gabby's trained model will be in `app/models/vision/teachable_model/` (TF.js) or `app/models/vision/model.tflite` (TFLite)
+- Integration code will need to load either the TF.js model (via `@aspect/tfjs` or a Python wrapper) or the TFLite model (via `tflite-runtime`)
+- If Teachable Machine accuracy caps out, we can graduate to YOLOv8 training later using the same screenshot dataset Gabby collected
