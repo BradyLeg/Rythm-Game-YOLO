@@ -61,18 +61,18 @@ You'll see `(venv)` in your prompt when active. To deactivate: `deactivate`
 - [x] Save audio buffer to a temporary `.wav` file for Whisper processing
 - [x] Wire mic capture to GUI button with QThread (non-blocking)
 
-### 3. Integrate Whisper Small (STT)
+### 3. Integrate Whisper Small (STT) ✅
 
-- [ ] Load Whisper Small model locally in `app/integrations/whisper/`
-- [ ] Create a function `transcribe(audio_path: str) -> str` that returns text
-- [ ] Wire microphone capture → transcription → display in GUI text area
-- [ ] Handle edge cases: empty audio, background noise, short utterances
+- [x] Load Whisper Small model locally in `app/integrations/whisper/`
+- [x] Create a function `transcribe(audio_path: str) -> str` that returns text
+- [x] Wire microphone capture → transcription → display in GUI text area
+- [x] Handle edge cases: empty audio, background noise, short utterances
 
-### 4. Connect Frontend to Backend API
+### 4. Connect Frontend to Backend API ✅
 
-- [ ] Send transcribed text to `POST /api/process` on the FastAPI backend
-- [ ] Display LLM response in GUI text area
-- [ ] Show loading/processing indicator while waiting for backend response
+- [x] Send transcribed text to `POST /api/process` on the FastAPI backend
+- [x] Display LLM response in GUI text area
+- [x] Show loading/processing indicator while waiting for backend response
 
 ### 5. GUI Polish & UX
 
