@@ -32,6 +32,7 @@ All dependencies run inside a Python virtual environment. Do **not** install glo
 # From the project root (Rythm-Game-YOLO/)
 python -m venv venv
 .\venv\Scripts\Activate.ps1
+source venv/Scripts/activate
 
 # Install all project dependencies
 pip install -r requirements.txt
