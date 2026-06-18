@@ -16,6 +16,8 @@ class KeyboardHandler:
         self.key_map = {
             "move_up": "up",
             "move_down": "down",
+            "move_left": "left",
+            "move_right": "right",
             "select": "enter",
             "go_back": "escape",
             "start_game": "space"
