@@ -28,7 +28,7 @@ class CommandRouter:
                             "action": {
                                 "type": "string",
                                 "description": "CRITICAL: You must choose ONLY from this exact list.",
-                                "enum": ["move_up", "move_down", "select", "go_back", "start_game", "none"]
+                                "enum": ["move_up", "move_down", "move_left", "move_right" "select", "go_back", "start_game", "none"]
                             },
                             "spoken_feedback": {
                                 "type": "string",
@@ -50,7 +50,8 @@ class CommandRouter:
             "1. For the 'action' argument, you are strictly FORBIDDEN from generating strings outside the enum list.\n"
             "2. Map 'next song' or 'scroll up' directly to 'move_up'.\n"
             "3. Map 'return to menu' or 'go back' directly to 'go_back'.\n"
-            "4. If the message is completely unrelated to game controls, use the action 'none'."
+            "4. Map 'previous song' or 'scroll down' directly to 'move_down'.\n"
+            "5. If the message is completely unrelated to game controls, use the action 'none'."
         )
 
         try:
