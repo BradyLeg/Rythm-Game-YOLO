@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import (
     QLineEdit, QCheckBox,
 )
 from PyQt6.QtCore import pyqtSignal, QThread, Qt
+import os
 
 
 PHRASES = [
@@ -143,7 +144,16 @@ class STTTestSection(QWidget):
         self._transcribe_worker = TranscribeWorker(wav_path)
         self._transcribe_worker.finished.connect(self._on_transcribe_done)
         self._transcribe_worker.error.connect(self._on_transcribe_error)
+        self._transcribe_worker.finished.connect(lambda _: self._cleanup_wav(wav_path))
+        self._transcribe_worker.error.connect(lambda _: self._cleanup_wav(wav_path))
         self._transcribe_worker.start()
+
+    def _cleanup_wav(self, path: str):
+        try:
+            if path and os.path.exists(path):
+                os.remove(path)
+        except OSError:
+            pass
 
     def _on_transcribe_done(self, text: str):
         if not text:

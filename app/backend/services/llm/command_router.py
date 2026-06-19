@@ -28,7 +28,7 @@ class CommandRouter:
                             "action": {
                                 "type": "string",
                                 "description": "CRITICAL: You must choose ONLY from this exact list.",
-                                "enum": ["move_up", "move_down", "select", "go_back", "start_game", "none"]
+                                "enum": ["move_up", "move_down", "move_left", "move_right", "select", "go_back", "start_game", "none"]
                             },
                             "spoken_feedback": {
                                 "type": "string",

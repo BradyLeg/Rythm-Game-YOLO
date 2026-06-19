@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout
-from app.frontend.gui.pallette import *
+from app.frontend.gui.palette import *
 from app.frontend.components import TitleBar, STTTestSection, YOLOSection, TTSSection, ControllerTestSection
 
 
