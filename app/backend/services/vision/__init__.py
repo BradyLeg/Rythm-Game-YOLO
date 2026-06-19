@@ -10,13 +10,20 @@ logger = logging.getLogger("VisionService")
 
 # Map YOLO class labels to keyboard action intents
 LABEL_TO_ACTION = {
-    "up": "move_up",
-    "down": "move_down",
-    "left": "move_left",
-    "right": "move_right",
-    "select": "select",
-    "start": "start_game",
+    "Arrow_Right": "move_right",
+    "Arrow_Up": "move_up",
+    "Hold_Start": "move_up",
+    "Hold_End": "move_up",
 }
+
+ARROW_LABELS = {"Arrow_Right", "Arrow_Up", "Hold_Start", "Hold_End"}
+ENEMY_LABELS = {"Enemy", "Enemy_Special"}
+
+
+def _boxes_overlap(box_a: list, box_b: list) -> bool:
+    """Check if two [x1, y1, x2, y2] boxes overlap."""
+    return (box_a[0] < box_b[2] and box_a[2] > box_b[0] and
+            box_a[1] < box_b[3] and box_a[3] > box_b[1])
 
 
 class VisionService:
@@ -58,10 +65,17 @@ class VisionService:
                 time.sleep(self._interval)
 
     def _act(self, detections: list[dict]):
-        """Press keys based on highest-confidence detection."""
+        """Press arrow keys when an Enemy overlaps with them."""
         if not detections:
             return
-        best = max(detections, key=lambda d: d["conf"])
-        action = LABEL_TO_ACTION.get(best["label"])
-        if action:
-            self._keyboard.press_action_key(action)
+        enemies = [d for d in detections if d["label"] in ENEMY_LABELS]
+        arrows = [d for d in detections if d["label"] in ARROW_LABELS]
+
+        for arrow in arrows:
+            for enemy in enemies:
+                if _boxes_overlap(arrow["box"], enemy["box"]):
+                    action = LABEL_TO_ACTION.get(arrow["label"])
+                    if action:
+                        logger.info(f"🎯 [{enemy['label']}] overlaps [{arrow['label']}] → pressing {action}")
+                        self._keyboard.press_action_key(action)
+                    break

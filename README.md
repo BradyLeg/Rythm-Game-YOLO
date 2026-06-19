@@ -40,7 +40,7 @@ app/
 | Combat command parser (enemy + direction → combos) | ✅ Working |
 | PyQt6 GUI with test panels | ✅ Working |
 | FastAPI backend | ✅ Working |
-| YOLO gameplay vision automation | 🚧 Scaffolded |
+| YOLO gameplay vision automation | ✅ Working |
 | .exe packaging | 🚧 Not started |
 
 ## Prerequisites
@@ -86,6 +86,8 @@ Download from https://ffmpeg.org/download.html and add to your system PATH.
 ```powershell
 python -m app.frontend.main
 ```
+
+The **YOLO Gameplay Automation** button in the GUI starts real-time screen capture and detection. It uses the trained model at `app/models/vision/best.pt` to detect gameplay elements and automatically sends the corresponding keypresses.
 
 ### FastAPI backend (for API/testing)
 
