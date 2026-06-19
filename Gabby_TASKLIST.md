@@ -27,11 +27,7 @@ You'll use **Google Teachable Machine** to do the training — no coding require
 | Snipping Tool / ShareX | Take screenshots of the game | Built into Windows (`Win + Shift + S`) |
 | A web browser (Chrome recommended) | Run Teachable Machine | Already installed |
 
-```powershell
-# From the project root (Rythm-Game-YOLO/)
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-source venv/Scripts/activate
+---
 
 ## Tasks (Do These In Order)
 
