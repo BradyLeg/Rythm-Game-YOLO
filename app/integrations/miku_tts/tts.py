@@ -13,9 +13,10 @@ class MikuTTSClient:
         self.space_id = "John6666/mikuTTS"
         
         # Directory where generated game audio assets will reside
-        self.output_dir = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), "../../../app/backend/static/audio")
+        self.output_dir = os.path.join(
+            os.path.dirname(__file__), "..", "..", "backend", "static", "audio"
         )
+        self.output_dir = os.path.abspath(self.output_dir)
         os.makedirs(self.output_dir, exist_ok=True)
         
         # Lazy load client to prevent slowing down server startup when offline

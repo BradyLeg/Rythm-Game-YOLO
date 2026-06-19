@@ -1,7 +1,15 @@
 """Combat command parser — maps spoken enemy + direction to keyboard output."""
 
 import time
-import pydirectinput
+import logging
+
+logger = logging.getLogger("CombatCommands")
+
+try:
+    import pydirectinput
+except ImportError:
+    pydirectinput = None
+    logger.warning("pydirectinput not available. Combat commands will be logged only.")
 
 ENEMY_COMBOS = {
     "Bat": "Hit → Hit",
@@ -70,6 +78,10 @@ def parse_command(text: str):
 
 def execute_combat(enemy: str, direction: str | None):
     """Output direction key + combo keys via keyboard."""
+    if not pydirectinput:
+        logger.info(f"[dry-run] combat: {enemy} dir={direction}")
+        return
+
     combo = ENEMY_COMBOS[enemy]
 
     if direction:
