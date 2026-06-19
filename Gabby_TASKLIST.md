@@ -27,7 +27,11 @@ You'll use **Google Teachable Machine** to do the training — no coding require
 | Snipping Tool / ShareX | Take screenshots of the game | Built into Windows (`Win + Shift + S`) |
 | A web browser (Chrome recommended) | Run Teachable Machine | Already installed |
 
----
+```powershell
+# From the project root (Rythm-Game-YOLO/)
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+source venv/Scripts/activate
 
 ## Tasks (Do These In Order)
 
@@ -61,17 +65,12 @@ You'll use **Google Teachable Machine** to do the training — no coding require
 
 **Goal:** Teach the computer to tell the difference between each note type.
 
-1. Go to https://teachablemachine.withgoogle.com/
-2. Click **"Get Started"** → choose **"Image Project"** → **"Standard image model"**
-3. You'll see classes on the left. Rename them and add more until you have:
-   - `note_up`
-   - `note_down`
-   - `note_left`
-   - `note_right`
-   - `nothing`
-4. For each class, click **"Upload"** and drag in all the screenshots from that folder
-5. Click **"Train Model"** — wait for it to finish (may take a couple minutes)
-6. **Test it!** Use the preview panel to show it new screenshots and see if it guesses right
+- [x] Record gameplay footage from the target rhythm game (screen capture or video files)
+- [x] Extract frames at a consistent rate (e.g., every 50ms for fast note detection)
+- [ ] Annotate note objects using bounding boxes (LabelImg or Roboflow)
+- [ ] Define classes: `note_up`, `note_down`, `note_left`, `note_right` (adjust per game)
+- [ ] Split dataset: 80% train / 10% val / 10% test
+- [ ] Store dataset config in `app/models/vision/dataset.yaml`
 
 > 🎯 **Goal:** The model should get the right answer at least 8 out of 10 times. If it's making mistakes, add more screenshots of the ones it's confused about and retrain.
 

@@ -1,8 +1,9 @@
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout,
     QLabel, QPushButton, QTextEdit, QComboBox,
+    QLineEdit, QCheckBox,
 )
-from PyQt6.QtCore import pyqtSignal, QThread
+from PyQt6.QtCore import pyqtSignal, QThread, Qt
 
 
 PHRASES = [
@@ -83,9 +84,16 @@ class STTTestSection(QWidget):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
 
+        # Header row with label + toggle in top-right
+        header_row = QHBoxLayout()
         label = QLabel("Speech Recognition Test")
         label.setObjectName("section-label")
-        layout.addWidget(label)
+        header_row.addWidget(label)
+        header_row.addStretch()
+        self.text_input_toggle = QCheckBox("Text Input")
+        self.text_input_toggle.toggled.connect(self._on_toggle_text_input)
+        header_row.addWidget(self.text_input_toggle)
+        layout.addLayout(header_row)
 
         phrase_row = QHBoxLayout()
         self.phrase_combo = QComboBox()
@@ -98,11 +106,27 @@ class STTTestSection(QWidget):
         phrase_row.addWidget(self.stt_btn)
         layout.addLayout(phrase_row)
 
+        # Text input (hidden by default)
+        self.text_input = QLineEdit()
+        self.text_input.setPlaceholderText("Type a command (e.g. 'Bat left')...")
+        self.text_input.returnPressed.connect(self._on_text_submit)
+        self.text_input.setVisible(False)
+        layout.addWidget(self.text_input)
+
         self.stt_output = QTextEdit()
         self.stt_output.setReadOnly(True)
         self.stt_output.setPlaceholderText("STT results will appear here...")
         self.stt_output.setMaximumHeight(120)
         layout.addWidget(self.stt_output)
+
+    def _on_toggle_text_input(self, checked: bool):
+        self.text_input.setVisible(checked)
+
+    def _on_text_submit(self):
+        text = self.text_input.text().strip()
+        if text:
+            self._on_transcribe_done(text)
+            self.text_input.clear()
 
     def _on_test_clicked(self):
         if self._worker and self._worker.isRunning():
@@ -126,6 +150,20 @@ class STTTestSection(QWidget):
             self.stt_btn.setEnabled(True)
             self.stt_output.setText("⚠️ No speech detected.")
             return
+
+        # Check for combat command first
+        from app.backend.services.stt.combat_commands import parse_command, execute_combat
+        result = parse_command(text)
+        if result:
+            enemy, combo, direction = result
+            execute_combat(enemy, direction)
+            dir_label = direction or "none"
+            self.stt_btn.setEnabled(True)
+            self.stt_output.setText(
+                f"🗣️ \"{text}\"\n⚔️ {enemy} | Dir: {dir_label} | Combo: {combo}"
+            )
+            return
+
         self.stt_output.setText(f"🗣️ \"{text}\"\n⏳ Sending to backend...")
         self._api_worker = APIWorker(text)
         self._api_worker.finished.connect(self._on_api_done)
