@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout
 from app.frontend.gui.palette import *
 from app.frontend.components import TitleBar, STTTestSection, YOLOSection, TTSSection, ControllerTestSection
+from app.backend.services.vision import VisionService
 
 
 class MainWindow(QMainWindow):
@@ -8,6 +9,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("Rhythm Game YOLO")
         self.setMinimumSize(600, 500)
+        self._vision = VisionService()
         self._build_ui()
         self._apply_style()
 
@@ -33,7 +35,16 @@ class MainWindow(QMainWindow):
         self.controller_test = ControllerTestSection()
         layout.addWidget(self.controller_test)
 
+        self.yolo_section.automate_requested.connect(self._toggle_vision)
+
         layout.addStretch()
+
+    def _toggle_vision(self):
+        if self._vision.running:
+            self._vision.stop()
+        else:
+            self._vision.start()
+        self.yolo_section.set_running(self._vision.running)
 
     def _apply_style(self):
         self.setStyleSheet(f"""
