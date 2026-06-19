@@ -4,5 +4,5 @@ __pycache__/
 *.pyc
 screenshots/
 *.wav
-*.pt
+small.pt
 sound-temp/
